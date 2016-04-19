@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml"
+				title="Media" transitionInComplete="transitionComplete(event)" customHeaderStyleName="red-header">
+	<fx:Script>
+		<![CDATA[
+			import flash.events.Event;
+			
+			import starling.events.Event;
+			
+			public static const GO_VIDEO_DETAILS:String = "goVideoDetails";
+			
+			private var youtubeLoader:URLLoader;
+			private var searchTerm:String = "Seattle";
+			private var pageToken:String = "";
+			private var loading:Boolean = false;
+			
+			protected var _data:NavigatorData;
+			
+			public function get data():NavigatorData
+			{
+				return this._data;
+			}		
+			
+			public function set data(value:NavigatorData):void
+			{
+				this._data = value;
+			}
+			
+			protected function transitionComplete(event:starling.events.Event):void
+			{
+				youtubeLoader = new URLLoader();
+				youtubeLoader.addEventListener(flash.events.Event.COMPLETE, youtubeVideosLoaded);
+				youtubeLoader.load(new URLRequest("https://www.googleapis.com/youtube/v3/search?q="+searchTerm+"&maxResults=50&order=relevance&type=video&part=snippet&key="+Constants.YOUTUBE_APIKEY));	
+			}
+			
+			protected function tabBarHandler(event:starling.events.Event):void
+			{
+				pageToken = "";
+				
+				if(mainTabBar.selectedItem.label == "Popular Videos")
+				{
+					youtubeLoader.load(new URLRequest("https://www.googleapis.com/youtube/v3/search?q="+searchTerm+"&maxResults=50&order=relevance&type=video&part=snippet&key="+Constants.YOUTUBE_APIKEY));
+				} else {
+					youtubeLoader.load(new URLRequest("https://www.googleapis.com/youtube/v3/search?q="+searchTerm+"&maxResults=50&order=date&type=video&part=snippet&key="+Constants.YOUTUBE_APIKEY));
+				}
+				
+				videosList.dataProvider = null;
+			}
+
+			private function youtubeVideosLoaded(event:flash.events.Event):void
+			{			
+				//Convert the JSON data to an object
+				var rawData:Object = JSON.parse(String(youtubeLoader.data));
+				pageToken = rawData.nextPageToken;
+				
+				if(videosList.dataProvider == null){
+					var videosArray:ListCollection = new ListCollection(rawData.items as Array);
+					videosList.dataProvider = videosArray;
+				} else {
+					for each (var item:* in rawData.items){
+						videosList.dataProvider.addItem(item);
+					}
+				}			
+				
+				loading = false;
+			}
+			
+			private function loadMore():void
+			{
+				if(!loading){
+					loading = true;
+					
+					if(mainTabBar.selectedItem.label == "Popular Videos"){
+						youtubeLoader.load(new URLRequest("https://www.googleapis.com/youtube/v3/search?q="+searchTerm+"&maxResults=50&pageToken="+pageToken+"&order=relevance&type=video&part=snippet&key="+Constants.YOUTUBE_APIKEY));
+					} else {
+						youtubeLoader.load(new URLRequest("https://www.googleapis.com/youtube/v3/search?q="+searchTerm+"&maxResults=50&pageToken="+pageToken+"&order=date&type=video&part=snippet&key="+Constants.YOUTUBE_APIKEY));
+					}
+				}
+			}
+			
+			private function scrollHandler(event:starling.events.Event):void
+			{
+				if(videosList.dataProvider != null && videosList.verticalScrollPosition == (videosList.viewPort.height - videosList.height))
+				{
+					loadMore();
+				}
+			}
+
+			protected function listHandler(event:starling.events.Event):void
+			{
+				this._data.videoinfo = videosList.selectedItem;
+				dispatchEventWith(GO_VIDEO_DETAILS);
+			}
+			
+			private function goBack():void
+			{
+				this.dispatchEventWith(starling.events.Event.COMPLETE);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:layout>
+		<ns:AnchorLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:leftItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="back-button" triggered="goBack()"/>
+				</fx:Vector>
+			</fx:leftItems>
+		</fx:Object>
+	</ns:headerProperties>
+	
+	<ns:TabBar id="mainTabBar" height="50" change="tabBarHandler(event)" customTabStyleName="red-tabs">
+		<ns:layoutData>
+			<ns:AnchorLayoutData top="0" right="0" left="0"/>
+		</ns:layoutData>
+		
+		<ns:dataProvider>
+			<ns:ListCollection>
+				<fx:Object label="Popular Videos"/>
+				<fx:Object label="Recent Videos"/>
+			</ns:ListCollection>
+		</ns:dataProvider>
+	</ns:TabBar>
+	
+	<ns:List id="videosList" change="listHandler(event)" scroll="scrollHandler(event)">
+		<ns:layoutData>
+			<ns:AnchorLayoutData top="50" right="0" bottom="0" left="0"/>
+		</ns:layoutData>
+		
+		<ns:itemRendererFactory>
+			<fx:Component>
+				<ns:DefaultListItemRenderer styleName="red-itemrenderer" isQuickHitAreaEnabled="true" labelFunction="myLabelFunction" iconSourceFunction="myIconSourceFunction" iconLoaderFactory="myIconFactory"
+											accessorySourceFunction="myAccessorySourceFunction" accessoryLoaderFactory="myAccessoryFactory">
+					<fx:Script>
+						<![CDATA[
+							import feathers.controls.ImageLoader;
+														
+							private function myLabelFunction(item:Object):String
+							{
+								return item.snippet.title + "\n" + item.snippet.channelTitle;
+							}
+							
+							private function myIconSourceFunction(item:Object):String
+							{
+								return item.snippet.thumbnails["default"].url;
+							}
+							
+							private function myIconFactory():ImageLoader
+							{
+								var loader:ImageLoader = new ImageLoader();
+								loader.width = 70;
+								loader.height = 60;
+								return loader;
+							}
+							
+							private function myAccessorySourceFunction(item:Object):String
+							{
+								return "assets/icons/ic_chevron_right_black_48dp.png";
+							}
+							
+							private function myAccessoryFactory():ImageLoader
+							{
+								var loader:ImageLoader = new ImageLoader();
+								loader.width = loader.height = 25;
+								return loader;
+							}
+
+						]]>
+					</fx:Script>
+				</ns:DefaultListItemRenderer>
+			</fx:Component>
+		</ns:itemRendererFactory>
+	</ns:List>
+	
+</ns:PanelScreen>

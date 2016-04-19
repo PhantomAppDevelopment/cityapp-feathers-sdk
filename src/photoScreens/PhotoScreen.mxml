@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml"
+				title="Photos" customHeaderStyleName="green-header" transitionInComplete="transitionComplete(event)" resize="resizeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import flash.events.Event;
+			import flash.text.engine.ElementFormat;
+			import flash.text.engine.FontDescription;
+			
+			import feathers.controls.Button;
+			import feathers.core.PopUpManager;
+			import feathers.data.ListCollection;
+			
+			import starling.display.Quad;
+			import starling.events.Event;
+			
+			private var flickrLoader:URLLoader;
+			private var searchTerm:String = "Cities";
+			private var popupOpen:Boolean = false;			
+						
+			protected function transitionComplete(event:starling.events.Event):void
+			{
+				backButtonHandler = goBack;
+				
+				//We initialize the URLLoader after the transition is complete to avoid stuttering/lag in the UI.
+				flickrLoader = new URLLoader();
+				flickrLoader.addEventListener(flash.events.Event.COMPLETE, flickrLoaded);
+				flickrLoader.load(new URLRequest("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key="+Constants.FLICKR_APIKEY+"&text="+searchTerm+"a&sort=relevance&format=rest"));	
+			}
+			
+			private function flickrLoaded(event:flash.events.Event):void
+			{
+				var myXMLList:XMLList = new XMLList(event.currentTarget.data);			
+				photosList.dataProvider = new ListCollection(myXMLList.photos.photo);
+			}
+			
+			protected function listHandler(event:starling.events.Event):void
+			{				
+				blackBar.width = stage.stageWidth;
+				photoTitle.width = stage.stageWidth;
+				photoTitle.text = photosList.selectedItem.@title;
+				photoTitle.textRendererProperties.elementFormat = new ElementFormat(new FontDescription("_sans"), 12, 0xFFFFFF);
+				
+				bigImage.width = stage.stageWidth;
+				bigImage.height = stage.stageHeight;
+				bigImage.source = "http://farm"+photosList.selectedItem.@farm+".staticflickr.com/"+photosList.selectedItem.@server+"/"+photosList.selectedItem.@id+"_"+photosList.selectedItem.@secret+"_z.jpg";
+				
+				
+				PopUpManager.addPopUp(popup, true, true, function():DisplayObject
+				{
+					var quad:Quad = new Quad(3, 3, 0x000000);
+					quad.alpha = 0.50;
+					return quad;				
+				});
+				
+				popupOpen = true;
+			}
+			
+			protected function resizeHandler(event:starling.events.Event):void
+			{
+				if(popupOpen)
+				{
+					PopUpManager.centerPopUp(popup);
+					
+					bigImage.width = stage.stageWidth;
+					bigImage.height = stage.stageHeight;
+					
+					photoTitle.width = stage.stageWidth;
+					blackBar.width = stage.stageWidth;
+				}
+			}
+			
+			protected function closePopup(event:starling.events.Event):void
+			{
+				PopUpManager.removePopUp(popup, false);
+				popupOpen = false;
+			}
+			
+			private function goBack():void
+			{
+				if(popupOpen){
+					PopUpManager.removePopUp(popup, true);
+				}
+				
+				this.dispatchEventWith(starling.events.Event.COMPLETE);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<ns:LayoutGroup id="popup">
+			<ns:layout>
+				<ns:AnchorLayout />
+			</ns:layout>
+			
+			<ns:ImageLoader id="bigImage" padding="20"/>
+			
+			<ns:ImageLoader id="blackBar" height="40" source="assets/icons/black.png" scaleMode="noBorder">
+				<ns:layoutData>
+					<ns:AnchorLayoutData right="0" bottom="0" left="0"/> 
+				</ns:layoutData>
+			</ns:ImageLoader>
+			
+			<ns:Label id="photoTitle" paddingLeft="20" paddingRight="20" paddingBottom="15">
+				<ns:layoutData>
+					<ns:AnchorLayoutData right="0" bottom="0" left="0"/>
+				</ns:layoutData>
+			</ns:Label>
+			
+			<ns:Button styleName="header-button" padding="10" triggered="closePopup(event)">
+				<ns:defaultIcon>
+					<ns:ImageLoader width="35" height="35" source="assets/icons/ic_highlight_off_white_48dp.png"/>
+				</ns:defaultIcon>
+				
+				<ns:layoutData>
+					<ns:AnchorLayoutData top="0" right="0"/>
+				</ns:layoutData>
+			</ns:Button>
+		</ns:LayoutGroup>
+	</fx:Declarations>
+	
+	<ns:layout>
+		<ns:VerticalLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:leftItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="back-button" triggered="goBack()"/>
+				</fx:Vector>
+			</fx:leftItems>
+		</fx:Object>
+	</ns:headerProperties>
+	
+	<ns:List id="photosList" itemRendererType="PhotoItemRenderer" paddingTop="15" paddingBottom="15" change="listHandler(event)">
+		<ns:layoutData>
+			<ns:VerticalLayoutData percentHeight="100" percentWidth="100"/>		
+		</ns:layoutData>
+		
+		<ns:layout>
+			<ns:TiledRowsLayout gap="20"/>
+		</ns:layout>
+	</ns:List>
+	
+</ns:PanelScreen>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml" title="City App" xmlns:display="starling.display.*">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import starling.display.Quad;
+			import starling.events.Event;
+			
+			public static const GO_NEWS:String = "goNews";
+			public static const GO_DIRECTORY:String = "goDirectory";
+			public static const GO_PHOTOS:String = "goPhotos";
+			public static const GO_VIDEOS:String = "goVideos";
+			public static const GO_ABOUT:String = "goAbout";
+			
+			private function createBackground(topColor:uint, bottomColor:uint):Quad
+			{
+				var quad:Quad = new Quad(3, 3);
+				quad.setVertexColor(0, topColor);
+				quad.setVertexColor(1, topColor);
+				quad.setVertexColor(2, bottomColor);
+				quad.setVertexColor(3, bottomColor);
+				
+				return quad;				
+			}			
+			
+			protected function goNews(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(GO_NEWS);
+			}
+			
+			protected function goDirectory(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(GO_DIRECTORY);
+			}
+			
+			protected function goPhotos(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(GO_PHOTOS);
+			}
+			
+			protected function goVideos(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(GO_VIDEOS);
+			}
+			
+			protected function goAbout(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(GO_ABOUT);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<ns:VerticalLayoutData id="layoutDataForGroups" percentWidth="100" percentHeight="25"/>
+		<ns:AnchorLayoutData id="layoutDataForLabel" left="80" verticalCenter="0"/>
+		<ns:AnchorLayoutData id="layoutForIcon" left="20" verticalCenter="0"/>
+		<ns:AnchorLayoutData id="layoutDataForArrowIcon" right="5" verticalCenter="0"/>
+		<ns:AnchorLayoutData id="layoutDataForButton" top="0" right="0" bottom="0" left="0"/>
+	</fx:Declarations>
+	
+	<ns:layout>
+		<ns:VerticalLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:rightItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="header-button" triggered="goAbout(event)">
+						<ns:defaultIcon>
+							<ns:ImageLoader width="25" height="25" source="assets/icons/ic_info_outline_white_48dp.png"/>
+						</ns:defaultIcon>
+					</ns:Button>
+				</fx:Vector>
+			</fx:rightItems>
+		</fx:Object>
+	</ns:headerProperties>
+	
+	<ns:LayoutGroup backgroundSkin="{createBackground(0xFFAE18, 0xFF8A00)}" layoutData="{layoutDataForGroups}">
+		<ns:layout>
+			<ns:AnchorLayout />
+		</ns:layout>
+		
+		<ns:Label text="NEWS" layoutData="{layoutDataForLabel}"/>
+		<ns:ImageLoader source="assets/icons/ic_chevron_right_white_48dp.png" width="45" height="45" layoutData="{layoutDataForArrowIcon}"/>
+		<ns:ImageLoader source="assets/icons/rss.png" width="40" height="40" layoutData="{layoutForIcon}"/>
+		<ns:BasicButton triggered="goNews(event)" styleName="transparent-button" layoutData="{layoutDataForButton}"/>		
+	</ns:LayoutGroup>	
+	
+	<ns:LayoutGroup backgroundSkin="{createBackground(0x2CB1E1, 0x12A0CF)}" layoutData="{layoutDataForGroups}">
+		<ns:layout>
+			<ns:AnchorLayout />
+		</ns:layout>
+		
+		<ns:Label text="DIRECTORY" layoutData="{layoutDataForLabel}"/>
+		<ns:ImageLoader source="assets/icons/ic_chevron_right_white_48dp.png" width="45" height="45" layoutData="{layoutDataForArrowIcon}"/>
+		<ns:ImageLoader source="assets/icons/ic_store_white_48dp.png" width="40" height="40" layoutData="{layoutForIcon}"/>
+		<ns:BasicButton triggered="goDirectory(event)" styleName="transparent-button" layoutData="{layoutDataForButton}"/>		
+	</ns:LayoutGroup>
+	
+	<ns:LayoutGroup backgroundSkin="{createBackground(0x92C500, 0x669900)}" layoutData="{layoutDataForGroups}">
+		<ns:layout>
+			<ns:AnchorLayout />
+		</ns:layout>
+		
+		<ns:Label text="PHOTOS" layoutData="{layoutDataForLabel}"/>
+		<ns:ImageLoader source="assets/icons/ic_chevron_right_white_48dp.png" width="45" height="45" layoutData="{layoutDataForArrowIcon}"/>
+		<ns:ImageLoader source="assets/icons/ic_theaters_white_48dp.png" width="40" height="40" layoutData="{layoutForIcon}"/>
+		<ns:BasicButton triggered="goPhotos(event)" styleName="transparent-button" layoutData="{layoutDataForButton}"/>		
+	</ns:LayoutGroup>
+	
+	<ns:LayoutGroup backgroundSkin="{createBackground(0xE92727, 0xCC0000)}" layoutData="{layoutDataForGroups}">
+		<ns:layout>
+			<ns:AnchorLayout />
+		</ns:layout>
+		
+		<ns:Label text="MEDIA" layoutData="{layoutDataForLabel}"/>
+		<ns:ImageLoader source="assets/icons/ic_chevron_right_white_48dp.png" width="45" height="45" layoutData="{layoutDataForArrowIcon}"/>
+		<ns:ImageLoader source="assets/icons/ic_theaters_white_48dp.png" width="40" height="40" layoutData="{layoutForIcon}"/>
+		<ns:BasicButton triggered="goVideos(event)" styleName="transparent-button" layoutData="{layoutDataForButton}"/>		
+	</ns:LayoutGroup>
+</ns:PanelScreen>

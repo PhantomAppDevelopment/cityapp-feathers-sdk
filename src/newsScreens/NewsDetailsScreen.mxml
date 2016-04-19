@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml"
+				transitionInComplete="transitionComplete(event)" customHeaderStyleName="orange-header">
+	<fx:Script>
+		<![CDATA[
+			import feathers.controls.ScrollText;
+			import feathers.layout.AnchorLayoutData;
+			import feathers.layout.VerticalLayoutData;
+			
+			import starling.events.Event;
+
+			protected var _data:NavigatorData;
+			
+			public function get data():NavigatorData
+			{
+				return this._data;
+			}		
+			
+			public function set data(value:NavigatorData):void
+			{
+				this._data = value;	
+			}
+						
+			protected function transitionComplete(event:starling.events.Event):void
+			{
+				backButtonHandler = goBack;
+				
+				this.title = this._data.newsinfo.title;
+				
+				//ScrollText is a heavy component, it is best to create it after the transition has completed.
+				var scrollText:ScrollText = new ScrollText();
+				scrollText.padding = 10;
+				scrollText.layoutData = new VerticalLayoutData(100, 100);;
+				this.addChild(scrollText);
+				scrollText.text = this._data.newsinfo.description;
+			}			
+			
+			private function goBack():void
+			{
+				this.dispatchEventWith(starling.events.Event.COMPLETE);
+			}						
+			
+		]]>
+	</fx:Script>
+	
+	<ns:layout>
+		<ns:VerticalLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:leftItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="back-button" triggered="goBack()"/>
+				</fx:Vector>
+			</fx:leftItems>
+		</fx:Object>
+	</ns:headerProperties>	
+</ns:PanelScreen>

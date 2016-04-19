@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml"
+				transitionInComplete="transitionComplete(event)" customHeaderStyleName="red-header">
+	<fx:Script>
+		<![CDATA[
+			import feathers.controls.WebView;
+			import feathers.layout.VerticalLayoutData;
+			
+			import starling.events.Event;
+			
+			protected var _data:NavigatorData;
+		
+			public function get data():NavigatorData
+			{
+				return this._data;
+			}		
+			
+			public function set data(value:NavigatorData):void
+			{
+				this._data = value;
+			}
+			
+			protected function transitionComplete(event:starling.events.Event):void
+			{
+				this.title = this._data.videoinfo.snippet.title;
+				
+				backButtonHandler = goBack;
+				
+				NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE;
+				
+				var webView:WebView = new WebView();
+				webView.layoutData = new VerticalLayoutData(100, 100);
+				webView.useNative = true;
+				this.addChild(webView);
+				webView.loadURL("http://www.youtube.com/embed/"+this._data.videoinfo.id.videoId);
+			}
+			
+			private function goBack():void
+			{
+				NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
+				this.dispatchEventWith(starling.events.Event.COMPLETE);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:layout>
+		<ns:VerticalLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:leftItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="back-button" triggered="goBack()"/>
+				</fx:Vector>
+			</fx:leftItems>
+		</fx:Object>
+	</ns:headerProperties>
+	
+</ns:PanelScreen>

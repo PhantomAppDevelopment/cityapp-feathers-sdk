@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml"
+				title="News" transitionInComplete="transitionComplete(event)" customHeaderStyleName="orange-header">	
+	<fx:Script>
+		<![CDATA[
+			import flash.events.Event;
+			
+			import feathers.data.ListCollection;
+			
+			import starling.events.Event;
+
+			public static const GO_NEWSDETAILS:String = "goNewsDetails";
+			
+			private var newsLoader:URLLoader;
+			private var searchTerm:String = "Seattle";
+			
+			protected var _data:NavigatorData;
+			
+			public function get data():NavigatorData
+			{
+				return this._data;
+			}		
+			
+			public function set data(value:NavigatorData):void
+			{
+				this._data = value;	
+			}
+									
+			protected function transitionComplete(event:starling.events.Event):void
+			{
+				backButtonHandler = goBack;
+				
+				newsLoader = new URLLoader();
+				newsLoader.addEventListener(flash.events.Event.COMPLETE, newsLoaded);
+				newsLoader.load(new URLRequest("https://news.google.com/news/feeds?q="+searchTerm+"&output=rss"));
+			}
+			
+			private function newsLoaded(event:flash.events.Event):void
+			{
+								
+				var myXMLList:XMLList = new XMLList(newsLoader.data);			
+				newsList.dataProvider = new ListCollection(myXMLList.channel.item);
+			}
+						
+			protected function tabBarHandler(event:starling.events.Event):void
+			{
+				if(mainTabBar.selectedItem.label == "Google News")
+				{
+					newsLoader.load(new URLRequest("https://news.google.com/news/feeds?q="+searchTerm+"&output=rss"));
+				} else {
+					newsLoader.load(new URLRequest("http://rss.nytimes.com/services/xml/rss/nyt/World.xml"));
+				}
+			}
+						
+			protected function listHandler(event:starling.events.Event):void
+			{
+				this._data.newsinfo = newsList.selectedItem;				
+				this.dispatchEventWith(GO_NEWSDETAILS);
+			}
+			
+			private function goBack():void
+			{
+				newsLoader.removeEventListener(flash.events.Event.COMPLETE, newsLoaded);
+				this.dispatchEventWith(starling.events.Event.COMPLETE);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:layout>
+		<ns:AnchorLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:leftItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="back-button" triggered="goBack()"/>
+				</fx:Vector>
+			</fx:leftItems>
+		</fx:Object>
+	</ns:headerProperties>
+	
+	<ns:TabBar id="mainTabBar" height="50" change="tabBarHandler(event)" customTabStyleName="orange-tabs">
+		<ns:layoutData>
+			<ns:AnchorLayoutData top="0" right="0" left="0"/>
+		</ns:layoutData>
+		
+		<ns:dataProvider>
+			<ns:ListCollection>
+				<fx:Object label="Google News"/>
+				<fx:Object label="RSS News"/>
+			</ns:ListCollection>
+		</ns:dataProvider>
+	</ns:TabBar>
+	
+	<ns:List id="newsList" change="listHandler(event)">
+		<ns:layoutData>
+			<ns:AnchorLayoutData top="50" right="0" bottom="0" left="0"/>
+		</ns:layoutData>
+	
+	<ns:itemRendererFactory>
+		<fx:Component>
+			<ns:DefaultListItemRenderer styleName="orange-itemrenderer" isQuickHitAreaEnabled="true" labelFunction="myLabelFunction" accessorySourceFunction="myAccessorySourceFunction" accessoryLoaderFactory="myAccessoryFactory">
+				<fx:Script>
+					<![CDATA[
+						import feathers.controls.ImageLoader;
+																	
+						private function myLabelFunction(item:Object):String
+						{
+							return item.title + "\n" + item.pubDate;
+						}
+						
+						private function myAccessorySourceFunction(item:Object):String
+						{
+							return "assets/icons/ic_chevron_right_black_48dp.png";
+						}
+						
+						private function myAccessoryFactory():ImageLoader
+						{
+							var loader:ImageLoader = new ImageLoader();
+							loader.width = loader.height = 25;
+							return loader;
+						}
+						
+						
+					]]>
+				</fx:Script>
+			</ns:DefaultListItemRenderer>
+		</fx:Component>
+	</ns:itemRendererFactory>	
+	</ns:List>
+		
+</ns:PanelScreen>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<f:StackScreenNavigatorApplication xmlns:f="library://ns.feathersui.com/mxml"
+								   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								   xmlns:s="library://ns.adobe.com/flex/spark" theme="CustomTheme" rootScreenID="homeScreen" xmlns:local="*" creationComplete="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import businessScreens.CategoryDetailsScreen;
+			import businessScreens.DirectoryScreen;
+			import businessScreens.MapScreen;
+			
+			import feathers.motion.Cover;
+			import feathers.motion.Reveal;
+			import feathers.motion.Slide;
+			
+			import mediaScreens.MediaScreen;
+			import mediaScreens.VideoDetailsScreen;
+			
+			import newsScreens.NewsDetailsScreen;
+			import newsScreens.NewsScreen;
+			
+			import photoScreens.PhotoScreen;
+			
+			import screens.AboutScreen;
+			import screens.HomeScreen;
+			
+			import starling.core.Starling;
+			import starling.events.Event;
+			
+			private static const NEWS_SCREEN:String = "newsScreen";
+			private static const NEWS_DETAILS_SCREEN:String = "newsDetailsScreen";
+			private static const DIRECTORY_SCREEN:String = "directoryScreen";
+			private static const CATEGORY_DETAILS_SCREEN:String = "categoryDetailsScreen";
+			private static const MAP_SCREEN:String = "mapScreen";
+			private static const PHOTOS_SCREEN:String = "photosScreen";
+			private static const MEDIA_SCREEN:String = "mediaScreen";
+			private static const VIDEO_DETAILS_SCREEN:String = "videoDetailsScreen";
+			private static const ABOUT_SCREEN:String = "aboutScreen";
+			
+			protected function init(event:starling.events.Event):void
+			{
+				//Starling.current.showStats = true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<local:NavigatorData id="NAVIGATOR_DATA"/>
+		
+		<fx:Vector id="PopEvent" type="String">
+			<fx:String>{Event.COMPLETE}</fx:String>
+		</fx:Vector>
+	</fx:Declarations>
+	
+	<f:pushTransition>{Slide.createSlideLeftTransition()}</f:pushTransition>
+	<f:popTransition>{Slide.createSlideRightTransition()}</f:popTransition>
+	
+	<f:StackScreenNavigatorItem id="homeScreen">
+		<fx:Class>screens.HomeScreen</fx:Class>
+		<f:pushEvents>
+			<fx:Object goNews="{NEWS_SCREEN}" goDirectory="{DIRECTORY_SCREEN}" goPhotos="{PHOTOS_SCREEN}" goVideos="{MEDIA_SCREEN}" goAbout="{ABOUT_SCREEN}"/>
+		</f:pushEvents>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="newsScreen" popEvents="{PopEvent}">
+		<fx:Class>newsScreens.NewsScreen</fx:Class>
+		
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+
+		<f:pushEvents>
+			<fx:Object goNewsDetails="{NEWS_DETAILS_SCREEN}"/>
+		</f:pushEvents>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="newsDetailsScreen" popEvents="{PopEvent}">
+		<fx:Class>newsScreens.NewsDetailsScreen</fx:Class>
+			
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="directoryScreen" popEvents="{PopEvent}">
+		<fx:Class>businessScreens.DirectoryScreen</fx:Class>
+		
+		<f:pushEvents>
+			<fx:Object goCategoryDetails="{CATEGORY_DETAILS_SCREEN}"/>
+		</f:pushEvents>
+		
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="categoryDetailsScreen" popEvents="{PopEvent}">
+		<fx:Class>businessScreens.CategoryDetailsScreen</fx:Class>
+		
+		<f:pushEvents>
+			<fx:Object goVenueDetails="{MAP_SCREEN}" />
+		</f:pushEvents>
+		
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="mapScreen" popEvents="{PopEvent}">
+		<fx:Class>businessScreens.MapScreen</fx:Class>
+		
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="photosScreen" popEvents="{PopEvent}">
+		<fx:Class>photoScreens.PhotoScreen</fx:Class>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="mediaScreen" popEvents="{PopEvent}">
+		<fx:Class>mediaScreens.MediaScreen</fx:Class>
+		
+		<f:pushEvents>
+			<fx:Object goVideoDetails="{VIDEO_DETAILS_SCREEN}"/>
+		</f:pushEvents>
+		
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="videoDetailsScreen" popEvents="{PopEvent}">
+		<fx:Class>mediaScreens.VideoDetailsScreen</fx:Class>
+		
+		<f:properties>
+			<fx:Object data="{NAVIGATOR_DATA}" />
+		</f:properties>
+	</f:StackScreenNavigatorItem>
+	
+	<f:StackScreenNavigatorItem id="aboutScreen" popEvents="{PopEvent}" pushTransition="{Cover.createCoverUpTransition()}" popTransition="{Reveal.createRevealDownTransition()}">
+		<fx:Class>screens.AboutScreen</fx:Class>
+	</f:StackScreenNavigatorItem>
+</f:StackScreenNavigatorApplication>

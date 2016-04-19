@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:PanelScreen xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" xmlns:ns="library://ns.feathersui.com/mxml"
+				transitionInComplete="transitionComplete(event)" customHeaderStyleName="blue-header">
+	<fx:Script>
+		<![CDATA[
+			import flash.events.Event;
+			
+			import feathers.data.ListCollection;
+			
+			import starling.events.Event;
+			
+			public static const GO_VENUE_DETAILS:String = "goVenueDetails";
+			
+			private var fourSquareLoader:URLLoader;
+			private var searchTerm:String = "Seattle";	
+			
+			protected var _data:NavigatorData;
+						
+			public function get data():NavigatorData
+			{
+				return this._data;
+			}		
+			
+			public function set data(value:NavigatorData):void
+			{
+				this._data = value;
+			}
+						
+			protected function transitionComplete(event:starling.events.Event):void
+			{
+				backButtonHandler = goBack;
+
+				this.title = this._data.categoryinfo.label;
+				
+				fourSquareLoader =new URLLoader();
+				fourSquareLoader.addEventListener(flash.events.Event.COMPLETE, loadedFourSquare);
+				fourSquareLoader.load(new URLRequest("https://api.foursquare.com/v2/venues/search?near="+searchTerm+"&categoryId="+this._data.categoryinfo.category+"&limit=50"+
+					"&client_id="+Constants.FOURQUARE_CLIENT_ID+"&client_secret="+Constants.FOURQUARE_CLIENT_SECRET+"&v=20160101"));
+			}
+
+			private function loadedFourSquare(event:flash.events.Event):void
+			{
+				var rawData:Object = JSON.parse(String(event.currentTarget.data));
+				
+				var businessArray:ListCollection = new ListCollection(rawData.response.venues as Array);
+				businessList.dataProvider = businessArray;
+			}
+			
+			protected function listHandler(event:starling.events.Event):void
+			{
+				this._data.venueinfo = businessList.selectedItem;
+				this.dispatchEventWith(GO_VENUE_DETAILS);
+			}
+			
+			private function goBack():void
+			{
+				this.dispatchEventWith(starling.events.Event.COMPLETE);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:layout>
+		<ns:VerticalLayout />
+	</ns:layout>
+	
+	<ns:headerProperties>
+		<fx:Object>
+			<fx:leftItems>
+				<fx:Vector type="starling.display.DisplayObject">
+					<ns:Button styleName="back-button" triggered="goBack()"/>
+				</fx:Vector>
+			</fx:leftItems>
+		</fx:Object>
+	</ns:headerProperties>
+	
+	<ns:List id="businessList" change="listHandler(event)">
+		<ns:layoutData>
+			<ns:VerticalLayoutData percentWidth="100" percentHeight="100"/>
+		</ns:layoutData>
+		
+		<ns:itemRendererFactory>
+			<fx:Component>
+				<ns:DefaultListItemRenderer styleName="blue-itemrenderer" isQuickHitAreaEnabled="true" labelFunction="myLabelFunction" accessorySourceFunction="myAccessorySourceFunction" accessoryLoaderFactory="myAccessoryFactory">
+					<fx:Script>
+						<![CDATA[
+							import feathers.controls.ImageLoader;
+							
+							private function myLabelFunction(item:Object):String
+							{
+								if(item.location.address == undefined)
+								{
+									if(item.categories.length != 0){
+										return item.name + "\n" + item.categories[0].name;
+									} else {
+										return item.name;
+									}
+								} else {
+									if(item.categories.length != 0){
+										return item.name + "\n" + item.location.address + "\n" + item.categories[0].name;
+									} else {
+										return item.name;
+									}
+								}
+							}
+							
+							private function myAccessorySourceFunction(item:Object):String
+							{
+								return "assets/icons/ic_chevron_right_black_48dp.png";
+							}
+							
+							private function myAccessoryFactory():ImageLoader
+							{
+								var loader:ImageLoader = new ImageLoader();
+								loader.width = loader.height = 25;
+								return loader;
+							}
+							
+						]]>
+					</fx:Script>
+				</ns:DefaultListItemRenderer>
+			</fx:Component>
+		</ns:itemRendererFactory>
+	</ns:List>
+	
+</ns:PanelScreen>
