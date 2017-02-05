@@ -6,21 +6,26 @@ package
 	import feathers.layout.AnchorLayoutData;
 	import feathers.utils.touch.TapToSelect;
 	
+	import starling.display.Quad;
+	
 	public class PhotoItemRenderer extends LayoutGroupListItemRenderer
 	{
-		protected var _image:ImageLoader;
+		private var _image:ImageLoader;
 		private var _select:TapToSelect;
 				
 		public function PhotoItemRenderer()
 		{
 			super();
 			this._select = new TapToSelect(this);
-			this.isQuickHitAreaEnabled = true;
 		}
 			
 		override protected function initialize():void
 		{
+			super.initialize();
+			
+			this.isQuickHitAreaEnabled = true;
 			this.layout = new AnchorLayout();
+			this.backgroundSkin = new Quad(70, 70, 0xFFFFFF);
 			
 			_image = new ImageLoader();
 			_image.layoutData = new AnchorLayoutData(0, 0, 0, 0, NaN, NaN);
@@ -33,9 +38,8 @@ package
 		{
 			if(this._data && this._owner)
 			{
-				_image.source = 'http://farm'+data.@farm+'.staticflickr.com/'+data.@server+'/'+data.@id+'_'+data.@secret+'_s.jpg';
-			} else
-			{
+				_image.source = 'https://farm'+_data.@farm+'.staticflickr.com/'+_data.@server+'/'+_data.@id+'_'+_data.@secret+'_s.jpg'; 
+			} else	{
 				_image.source = null;
 			}
 		}

@@ -143,7 +143,7 @@
 														
 							private function myLabelFunction(item:Object):String
 							{
-								return item.snippet.title + "\n" + item.snippet.channelTitle;
+								return "<b>" + item.snippet.title + "</b>" + "\n" + item.snippet.channelTitle;
 							}
 							
 							private function myIconSourceFunction(item:Object):String

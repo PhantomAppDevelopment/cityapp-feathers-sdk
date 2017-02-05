@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <f:StackScreenNavigatorApplication xmlns:f="library://ns.feathersui.com/mxml"
 								   xmlns:fx="http://ns.adobe.com/mxml/2009" 
-								   xmlns:s="library://ns.adobe.com/flex/spark" theme="CustomTheme" rootScreenID="homeScreen" xmlns:local="*" creationComplete="init(event)">
+								   xmlns:s="library://ns.adobe.com/flex/spark" theme="CustomTheme" rootScreenID="homeScreen" xmlns:local="*">
 	<fx:Script>
 		<![CDATA[
 			import businessScreens.CategoryDetailsScreen;
@@ -35,11 +35,6 @@
 			private static const MEDIA_SCREEN:String = "mediaScreen";
 			private static const VIDEO_DETAILS_SCREEN:String = "videoDetailsScreen";
 			private static const ABOUT_SCREEN:String = "aboutScreen";
-			
-			protected function init(event:starling.events.Event):void
-			{
-				//Starling.current.showStats = true;
-			}
 			
 		]]>
 	</fx:Script>

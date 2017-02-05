@@ -108,7 +108,7 @@
 		
 		<ns:Label text="PHOTOS" layoutData="{layoutDataForLabel}"/>
 		<ns:ImageLoader source="assets/icons/ic_chevron_right_white_48dp.png" width="45" height="45" layoutData="{layoutDataForArrowIcon}"/>
-		<ns:ImageLoader source="assets/icons/ic_theaters_white_48dp.png" width="40" height="40" layoutData="{layoutForIcon}"/>
+		<ns:ImageLoader source="assets/icons/ic_local_see_white_48dp.png" width="40" height="40" layoutData="{layoutForIcon}"/>
 		<ns:BasicButton triggered="goPhotos(event)" styleName="transparent-button" layoutData="{layoutDataForButton}"/>		
 	</ns:LayoutGroup>
 	

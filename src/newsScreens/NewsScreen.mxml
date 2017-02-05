@@ -109,7 +109,7 @@
 																	
 						private function myLabelFunction(item:Object):String
 						{
-							return item.title + "\n" + item.pubDate;
+							return "<b>" + item.title + "</b>" + "\n" + item.pubDate;
 						}
 						
 						private function myAccessorySourceFunction(item:Object):String

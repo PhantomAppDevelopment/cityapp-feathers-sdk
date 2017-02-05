@@ -74,10 +74,18 @@
 		
 		<ns:itemRendererFactory>
 			<fx:Component>
-				<ns:DefaultListItemRenderer styleName="blue-itemrenderer" isQuickHitAreaEnabled="true" labelField="label" iconSourceField="icon" accessorySourceFunction="myAccessorySourceFunction" accessoryLoaderFactory="myAccessoryFactory">
+				<ns:DefaultListItemRenderer styleName="blue-itemrenderer" isQuickHitAreaEnabled="true" labelField="label" iconSourceField="icon" iconLoaderFactory="myIconLoaderFactory"
+											accessorySourceFunction="myAccessorySourceFunction" accessoryLoaderFactory="myAccessoryFactory">
 					<fx:Script>
 						<![CDATA[
 							import feathers.controls.ImageLoader;
+							
+							private function myIconLoaderFactory():ImageLoader
+							{
+								var loader:ImageLoader = new ImageLoader();
+								loader.width = loader.height = 40;
+								return loader;
+							}
 							
 							private function myAccessorySourceFunction(item:Object):String
 							{

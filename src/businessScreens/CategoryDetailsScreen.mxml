@@ -92,15 +92,15 @@
 								if(item.location.address == undefined)
 								{
 									if(item.categories.length != 0){
-										return item.name + "\n" + item.categories[0].name;
+										return "<b>" + item.name + "</b>" + "\n" + item.categories[0].name;
 									} else {
-										return item.name;
+										return "<b>" + item.name + "</b>";
 									}
 								} else {
 									if(item.categories.length != 0){
-										return item.name + "\n" + item.location.address + "\n" + item.categories[0].name;
+										return "<b>" + item.name + "</b>" + "\n" + item.location.address + "\n" + item.categories[0].name;
 									} else {
-										return item.name;
+										return "<b>" + item.name + "</b>";
 									}
 								}
 							}

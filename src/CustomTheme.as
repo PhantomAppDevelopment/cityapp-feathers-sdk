@@ -1,11 +1,7 @@
 package
 {
-	import flash.text.TextFormat;
-	import flash.text.engine.ElementFormat;
-	import flash.text.engine.FontDescription;
-	import flash.text.engine.FontLookup;
-	
 	import feathers.controls.Button;
+	import feathers.controls.ButtonState;
 	import feathers.controls.Header;
 	import feathers.controls.ImageLoader;
 	import feathers.controls.Label;
@@ -17,6 +13,7 @@ package
 	import feathers.controls.renderers.DefaultListItemRenderer;
 	import feathers.controls.text.StageTextTextEditor;
 	import feathers.controls.text.TextBlockTextRenderer;
+	import feathers.controls.text.TextFieldTextRenderer;
 	import feathers.core.FeathersControl;
 	import feathers.core.ITextEditor;
 	import feathers.core.ITextRenderer;
@@ -24,14 +21,15 @@ package
 	
 	import starling.display.Quad;
 	import starling.display.Sprite;
+	import starling.text.TextFormat;
 	
 	public class CustomTheme extends StyleNameFunctionTheme
 	{
-		[Embed(source="assets/font.otf", fontFamily="MyFont", fontWeight="normal", fontStyle="normal", mimeType="application/x-font", embedAsCFF="true")]
+		[Embed(source="assets/font.otf", fontFamily="MyFont", fontWeight="normal", fontStyle="normal", mimeType="application/x-font", embedAsCFF="false")]
 		private static const MY_FONT:Class;
 		
-		private var whiteText:ElementFormat = new ElementFormat(new FontDescription("_sans"), 12, 0xFFFFFF);
-		private var blackText:ElementFormat = new ElementFormat(new FontDescription("_sans"), 12, 0x000000);
+		private var blackFormat:TextFormat = new TextFormat("_sans", 14, 0x000000, "left");
+		private var whiteFormat:TextFormat = new TextFormat("_sans", 14, 0xFFFFFF, "left");
 		
 		public function CustomTheme()
 		{
@@ -50,13 +48,18 @@ package
 		{
 			FeathersControl.defaultTextRendererFactory = function():ITextRenderer
 			{
-				return new TextBlockTextRenderer();
-			}
+				var renderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				renderer.isHTML = true;
+				return renderer;
+			};
 			
 			FeathersControl.defaultTextEditorFactory = function():ITextEditor
 			{
 				return new StageTextTextEditor();
-			}
+			};
+			
+			blackFormat.leading = 7;
+			whiteFormat.leading = 7;
 		}
 		
 		private function initializeStyleProviders():void
@@ -97,25 +100,25 @@ package
 		
 		private function createSmallGradient(topColor:uint, bottomColor:uint):Quad
 		{
-			var blueQuad:Quad = new Quad(3, 5);
-			blueQuad.y = 45;
-			blueQuad.setVertexColor(0, topColor);
-			blueQuad.setVertexColor(1, topColor);
-			blueQuad.setVertexColor(2, bottomColor);
-			blueQuad.setVertexColor(3, bottomColor);			
-			return blueQuad;
+			var quad:Quad = new Quad(3, 5);
+			quad.y = 45;
+			quad.setVertexColor(0, topColor);
+			quad.setVertexColor(1, topColor);
+			quad.setVertexColor(2, bottomColor);
+			quad.setVertexColor(3, bottomColor);			
+			return quad;
 		}
 		
 		private function createSmallOpaqueGradient(topColor:uint, bottomColor:uint):Quad
 		{
-			var blueQuad:Quad = new Quad(3, 5);
-			blueQuad.y = 45;
-			blueQuad.alpha = 0.5;
-			blueQuad.setVertexColor(0, topColor);
-			blueQuad.setVertexColor(1, topColor);
-			blueQuad.setVertexColor(2, bottomColor);
-			blueQuad.setVertexColor(3, bottomColor);			
-			return blueQuad;
+			var quad:Quad = new Quad(3, 5);
+			quad.y = 45;
+			quad.alpha = 0.5;
+			quad.setVertexColor(0, topColor);
+			quad.setVertexColor(1, topColor);
+			quad.setVertexColor(2, bottomColor);
+			quad.setVertexColor(3, bottomColor);			
+			return quad;
 		}
 		
 		//-------------------------
@@ -159,17 +162,8 @@ package
 		//-------------------------
 		
 		private function setHeaderStyles(header:Header):void
-		{			
-			header.titleFactory = function():ITextRenderer
-			{
-				var font:FontDescription = new FontDescription("MyFont");
-				font.fontLookup = FontLookup.EMBEDDED_CFF;
-				
-				var titleRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-				titleRenderer.elementFormat =new ElementFormat(font, 14, 0xFFFFFF);
-				return titleRenderer;
-			};
-			
+		{	
+			header.fontStyles = new TextFormat("MyFont", 16, 0xFFFFFF);
 			header.gap = 5;
 			header.titleAlign = Header.TITLE_ALIGN_PREFER_LEFT;
 			header.paddingLeft = 10;
@@ -178,61 +172,25 @@ package
 		
 		private function setOrangeHeaderStyles(header:Header):void
 		{		
-			header.titleFactory = function():ITextRenderer
-			{
-				var font:FontDescription = new FontDescription("MyFont");
-				font.fontLookup = FontLookup.EMBEDDED_CFF;
-				
-				var titleRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-				titleRenderer.elementFormat = new ElementFormat(font, 14, 0xFFFFFF);
-				return titleRenderer;
-			};
-			
+			header.fontStyles = new TextFormat("MyFont", 16, 0xFFFFFF);
 			header.backgroundSkin = new Quad(3, 50, 0xFF8A00);
 		}
 		
 		private function setBlueHeaderStyles(header:Header):void
 		{		
-			header.titleFactory = function():ITextRenderer
-			{
-				var font:FontDescription = new FontDescription("MyFont");
-				font.fontLookup = FontLookup.EMBEDDED_CFF;
-				
-				var titleRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-				titleRenderer.elementFormat = new ElementFormat(font, 14, 0xFFFFFF);
-				return titleRenderer;
-			};
-			
+			header.fontStyles = new TextFormat("MyFont", 16, 0xFFFFFF);
 			header.backgroundSkin = new Quad(3, 50, 0x12A0CF);
 		}
 		
 		private function setGreenHeaderStyles(header:Header):void
 		{		
-			header.titleFactory = function():ITextRenderer
-			{
-				var font:FontDescription = new FontDescription("MyFont");
-				font.fontLookup = FontLookup.EMBEDDED_CFF;
-				
-				var titleRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-				titleRenderer.elementFormat = new ElementFormat(font, 14, 0xFFFFFF);
-				return titleRenderer;
-			};
-			
+			header.fontStyles = new TextFormat("MyFont", 16, 0xFFFFFF);
 			header.backgroundSkin = new Quad(3, 50, 0x669900);
 		}
 
 		private function setRedHeaderStyles(header:Header):void
 		{		
-			header.titleFactory = function():ITextRenderer
-			{
-				var font:FontDescription = new FontDescription("MyFont");
-				font.fontLookup = FontLookup.EMBEDDED_CFF;
-				
-				var titleRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-				titleRenderer.elementFormat = new ElementFormat(font, 14, 0xFFFFFF);
-				return titleRenderer;
-			};
-			
+			header.fontStyles = new TextFormat("MyFont", 16, 0xFFFFFF);
 			header.backgroundSkin = new Quad(3, 50, 0xCC0000);
 		}
 		
@@ -242,15 +200,7 @@ package
 		
 		private function setLabelStyles(label:Label):void
 		{
-			label.textRendererFactory = function():ITextRenderer
-			{
-				var font:FontDescription = new FontDescription("MyFont");
-				font.fontLookup = FontLookup.EMBEDDED_CFF;
-				
-				var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-				renderer.elementFormat = new ElementFormat(font, 20, 0xFFFFFF);
-				return renderer;
-			}
+			label.fontStyles = new TextFormat("MyFont", 20, 0xFFFfFF);
 		}
 		
 		//-------------------------
@@ -259,7 +209,7 @@ package
 		
 		private function setListStyles(list:List):void
 		{
-			list.backgroundSkin = new Quad(3, 3, 0xD7DADD);
+			list.backgroundSkin = new Quad(3, 3, 0xEEEEEE);
 		}
 		
 		private function setOrangeItemRendererStyles(renderer:DefaultListItemRenderer):void
@@ -272,16 +222,21 @@ package
 			renderer.horizontalAlign = Button.HORIZONTAL_ALIGN_LEFT;
 			renderer.paddingLeft = 10;
 			renderer.paddingRight = 0;
-			renderer.paddingTop = 5;
-			renderer.paddingBottom = 5;
-			renderer.gap = 10;
+			renderer.paddingTop = 15;
+			renderer.paddingBottom = 15;
+			renderer.gap = 5;
 			renderer.minHeight = 60;
-			renderer.defaultLabelProperties.leading = 7;
 			renderer.accessoryGap = Number.POSITIVE_INFINITY;
 			renderer.iconPosition = Button.ICON_POSITION_LEFT;
 			renderer.accessoryPosition = BaseDefaultItemRenderer.ACCESSORY_POSITION_RIGHT;
-			renderer.defaultLabelProperties.elementFormat = blackText;
-			renderer.downLabelProperties.elementFormat = whiteText;
+			renderer.defaultLabelProperties.wordWrap = true;
+			
+			renderer.setFontStylesForState(ButtonState.UP, blackFormat);
+			renderer.setFontStylesForState(ButtonState.UP_AND_SELECTED, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.DOWN, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.DOWN_AND_SELECTED, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.HOVER, blackFormat);
+			renderer.setFontStylesForState(ButtonState.HOVER_AND_SELECTED, whiteFormat);
 		}	
 		
 		private function setBlueItemRendererStyles(renderer:DefaultListItemRenderer):void
@@ -292,18 +247,22 @@ package
 			renderer.selectedDownSkin = new Quad(3, 3, 0x12A0CF);
 			
 			renderer.horizontalAlign = Button.HORIZONTAL_ALIGN_LEFT;
-			renderer.paddingLeft = 10;
+			renderer.paddingLeft = 15;
 			renderer.paddingRight = 0;
-			renderer.paddingTop = 5;
-			renderer.paddingBottom = 5;
-			renderer.gap = 10;
-			renderer.minHeight = 65;
-			renderer.defaultLabelProperties.leading = 7;
+			renderer.paddingTop = 15;
+			renderer.paddingBottom = 15;
+			renderer.gap = 20;
+			renderer.minHeight = 50;
 			renderer.accessoryGap = Number.POSITIVE_INFINITY;
 			renderer.iconPosition = Button.ICON_POSITION_LEFT;
 			renderer.accessoryPosition = BaseDefaultItemRenderer.ACCESSORY_POSITION_RIGHT;
-			renderer.defaultLabelProperties.elementFormat = blackText;
-			renderer.downLabelProperties.elementFormat = whiteText;
+			
+			renderer.setFontStylesForState(ButtonState.UP, blackFormat);
+			renderer.setFontStylesForState(ButtonState.UP_AND_SELECTED, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.DOWN, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.DOWN_AND_SELECTED, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.HOVER, blackFormat);
+			renderer.setFontStylesForState(ButtonState.HOVER_AND_SELECTED, whiteFormat);
 		}
 		
 		private function setRedItemRendererStyles(renderer:DefaultListItemRenderer):void
@@ -316,16 +275,21 @@ package
 			renderer.horizontalAlign = Button.HORIZONTAL_ALIGN_LEFT;
 			renderer.paddingLeft = 10;
 			renderer.paddingRight = 0;
-			renderer.paddingTop = 5;
-			renderer.paddingBottom = 5;
+			renderer.paddingTop = 15;
+			renderer.paddingBottom = 15;
 			renderer.gap = 10;
 			renderer.minHeight = 65;
-			renderer.defaultLabelProperties.leading = 7;
 			renderer.accessoryGap = Number.POSITIVE_INFINITY;
 			renderer.iconPosition = Button.ICON_POSITION_LEFT;
 			renderer.accessoryPosition = BaseDefaultItemRenderer.ACCESSORY_POSITION_RIGHT;
-			renderer.defaultLabelProperties.elementFormat = blackText;
-			renderer.downLabelProperties.elementFormat = whiteText;
+			renderer.defaultLabelProperties.wordWrap = true;
+
+			renderer.setFontStylesForState(ButtonState.UP, blackFormat);
+			renderer.setFontStylesForState(ButtonState.UP_AND_SELECTED, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.DOWN, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.DOWN_AND_SELECTED, whiteFormat);
+			renderer.setFontStylesForState(ButtonState.HOVER, blackFormat);
+			renderer.setFontStylesForState(ButtonState.HOVER_AND_SELECTED, whiteFormat);
 		}
 		
 		//-------------------------
@@ -334,6 +298,7 @@ package
 		
 		private function setPanelScreenStyles(screen:PanelScreen):void
 		{
+			screen.hasElasticEdges = false;
 			screen.backgroundSkin = new Quad(3, 3, 0xFFFFFF);
 		}
 				
@@ -355,8 +320,7 @@ package
 			button.downSkin = defaultSelectedSkin;
 			button.selectedDownSkin = defaultSelectedSkin;
 			button.defaultSelectedSkin = defaultSelectedSkin;
-			
-			button.defaultLabelProperties.elementFormat = blackText;
+			button.fontStyles = new TextFormat("MyFont", 14, 0x000000);
 		}
 		
 		private function setRedTabStyles(button:ToggleButton):void
@@ -373,8 +337,7 @@ package
 			button.downSkin = defaultSelectedSkin;
 			button.selectedDownSkin = defaultSelectedSkin;
 			button.defaultSelectedSkin = defaultSelectedSkin;
-			
-			button.defaultLabelProperties.elementFormat = blackText;
+			button.fontStyles = new TextFormat("MyFont", 14, 0x000000);
 		}
 		
 		//-------------------------
@@ -383,7 +346,7 @@ package
 		
 		private function setScrollTextStyles(scrolltext:ScrollText):void
 		{
-			scrolltext.textFormat = new TextFormat("_sans", 12, 0x000000);
+			scrolltext.fontStyles = new TextFormat("_sans", 14, 0x000000, "left");
 			scrolltext.isHTML = true;
 		}
 		
