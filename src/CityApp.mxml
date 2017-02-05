@@ -4,26 +4,10 @@
 								   xmlns:s="library://ns.adobe.com/flex/spark" theme="CustomTheme" rootScreenID="homeScreen" xmlns:local="*">
 	<fx:Script>
 		<![CDATA[
-			import businessScreens.CategoryDetailsScreen;
-			import businessScreens.DirectoryScreen;
-			import businessScreens.MapScreen;
-			
 			import feathers.motion.Cover;
 			import feathers.motion.Reveal;
 			import feathers.motion.Slide;
 			
-			import mediaScreens.MediaScreen;
-			import mediaScreens.VideoDetailsScreen;
-			
-			import newsScreens.NewsDetailsScreen;
-			import newsScreens.NewsScreen;
-			
-			import photoScreens.PhotoScreen;
-			
-			import screens.AboutScreen;
-			import screens.HomeScreen;
-			
-			import starling.core.Starling;
 			import starling.events.Event;
 			
 			private static const NEWS_SCREEN:String = "newsScreen";
