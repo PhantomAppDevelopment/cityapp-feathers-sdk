@@ -23,10 +23,10 @@ To compile this application you require to provide your own API Keys which can b
 
 You will also require the Feathers SDK with a recent version of Adobe AIR.
 
-[![Watch on Youtube](http://i.imgur.com/9XwfenC.png)](https://youtu.be/x-LE-KRYxfk)
+[![Watch on Youtube](http://i.imgur.com/9XwfenC.png)](https://www.youtube.com/watch?v=x-LE-KRYxfk)
 
 ## Download
 
 You can test this app by downloading it directly from GitHub.
 
-[![Download](http://i.imgur.com/sYA22o3.png)](https://github.com/PhantomAppDevelopment/cityapp-feathers-sdk/releases/download/1.2.0/CityApp.apk)
+[![Download](http://i.imgur.com/Zdw2GTk.png)](https://github.com/PhantomAppDevelopment/cityapp-feathers-sdk/releases/download/1.2.0/CityApp.apk)
